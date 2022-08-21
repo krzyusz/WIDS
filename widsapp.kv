@@ -1,0 +1,240 @@
+MainLayout: 
+
+<DetectionResultPopup>:
+    orientation: 'vertical'
+    size_hint: 1, 1
+    spacing: 1
+    LogsDisplaySectionHeader:
+        
+    ScrollView:
+        id:logsScroll
+        size_hint: 1, 1
+        canvas.before:
+            Color:
+                rgba:.7, .7, .7, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+            Line:
+                width: 2
+                rectangle: self.x, self.y, self.width, self.height
+        do_scroll_x: False
+        do_scroll_y: True
+        LogsListLayout:
+            canvas.before:
+                Color:
+                    rgba:.7, .7, .7, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                Line:
+                    width: 2
+                    rectangle: self.x, self.y, self.width, self.height
+            id: logs
+            size_hint: 1, None
+            height: self.minimum_height
+            spacing: 6
+
+
+<LogLayout>:
+    canvas.before:
+        Color:
+            rgba: self.background
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Line:
+            width: 2
+            rectangle: self.x, self.y, self.width, self.height
+    size_hint: 1, None
+    height: 20
+    BoxLayout:
+        orientation: 'horizontal'
+        Label:
+            color: 0, 0, 0, 1
+            text: root.lid
+        Label:
+            color: 0, 0, 0, 1
+            text: root.src 
+        Label:
+            color: 0, 0, 0, 1
+            text: root.dst
+        Label:
+            color: 0, 0, 0, 1
+            text: root.ltype
+        Label:
+            color: 0, 0, 0, 1
+            text: root.lsubtype
+
+<LeftSection>:
+    orientation: 'vertical'
+    size_hint: .2, 1
+    padding: [0, 30, 0, 0] 
+    spacing: 30
+    ToggleButton:
+        size_hint: None, None
+        size: 200, 50
+        pos_hint: {'center_x':.5, 'top':.2}
+        text: root.tp
+        on_state: root.gather_logs()
+        background_color: {'normal':(0,1,0,1),'down':(1,0,0,1)} [self.state]
+    Button:
+        size_hint: None, None
+        size: 200, 50
+        pos_hint: {'center_x':.5, 'top':.4}
+        text: 'Reset'
+        on_press: root.reset_logs()
+    Button:
+        size_hint: None, None
+        size: 200, 50
+        pos_hint: {'center_x':.5, 'top':.4}
+        text: 'Save logs'
+        on_press: root.save_logs()
+    Button:
+        size_hint: None, None
+        size: 200, 50
+        pos_hint: {'center_x':.5, 'top':.4}
+        text: 'Load logs'
+        on_press: root.load_logs()
+    Widget:
+        size_hint: None, None
+        size: 200, 50
+        pos_hint: {'center_x':.5, 'top':.4}
+    Button:
+        size_hint: None, None
+        size: 200, 50
+        pos_hint: {'center_x':.5, 'top':.4}
+        text: 'Run: Test Detection'
+        on_press: root.run_test_detection()
+    Widget:
+
+<FilterInputSection@BoxLayout>:
+    orientation: 'horizontal'
+    size_hint: 1, None
+    height: 30
+    TextInput:
+        text: "Insert filter here"
+        size_hint: .9, 1
+        multiline: False
+    Button:
+        size_hint: .1, 1
+        text: "run"
+
+<LogsDisplaySectionHeader@BoxLayout>:
+    canvas.before:
+        Color:
+            rgba:.5, .5, .5, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Line:
+            width: 2
+            rectangle: self.x, self.y, self.width, self.height
+    orientation: 'horizontal'
+    size_hint: 1, None
+    height: 30
+    Label:
+        text:"Id"
+        color: 0,0,0,1
+    Label:
+        text:"Source MAC"
+        color: 0,0,0,1
+    Label:
+        text: "Dest MAC"
+        color: 0,0,0,1
+    Label:
+        text: "Type"
+        color: 0,0,0,1
+    Label:
+        text: "Subtype"
+        color: 0,0,0,1
+
+<LogsDisplaySection@BoxLayout>:
+    id: logsDisplaySection
+    orientation: 'vertical'
+    size_hint: 1, 1
+    spacing: 1
+    LogsDisplaySectionHeader:
+        
+    ScrollView:
+        id:logsScroll
+        size_hint: 1, 1
+        canvas.before:
+            Color:
+                rgba:.7, .7, .7, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+            Line:
+                width: 2
+                rectangle: self.x, self.y, self.width, self.height
+        do_scroll_x: False
+        do_scroll_y: True
+        LogsListLayout:
+            canvas.before:
+                Color:
+                    rgba:.7, .7, .7, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                Line:
+                    width: 2
+                    rectangle: self.x, self.y, self.width, self.height
+            id: logs
+            size_hint: 1, None
+            height: self.minimum_height
+            spacing: 6
+
+<LogDetailedInfoSection@BoxLayout>:
+    canvas.before:
+        Color:
+            rgba:.7, .7, .7, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Line:
+            width: 2
+            rectangle: self.x, self.y, self.width, self.height
+    size_hint: 1, 0.7
+    ScrollView:
+        id: logDetailsScrollView
+        do_scroll_x: False
+        do_scroll_y: True
+        size_hint: 1, 1
+        Label:
+            color: 0, 0, 0, 1
+            size_hint: None, None
+            size: self.texture_size
+            id: logDetailsLabel
+            text: 'fdg'
+
+<RightSection@BoxLayout>:
+    orientation: 'vertical'
+    size_hint: .8, 1
+    spacing: 10
+    padding: [20, 20, 20, 20] 
+    FilterInputSection:
+        
+    LogsDisplaySection:
+        id: logsDisplaySection
+    LogDetailedInfoSection:
+        id: logDetailedInfoSection
+
+
+
+<MainLayout>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        id: mainLayout
+        orientation: 'horizontal'
+        LeftSection:
+            id: leftSection
+        RightSection:
+            id: rightSection
+            
+
