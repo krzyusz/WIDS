@@ -22,6 +22,10 @@ class LogLayout(ButtonBehavior, BoxLayout):
                 self.lid = lid
                 self.packet = packet.show(dump=True)
                 self.src = packet.addr2
+            except:
+                self.src = " "
+                pass
+            try:
                 self.dst = packet.addr1
                 self.ltype = packet_decoder.decode_packet_type(packet.type)
                 self.lsubtype = packet_decoder.decode_packet_subtype(packet.type, packet.subtype)

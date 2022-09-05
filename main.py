@@ -8,6 +8,7 @@ from kivy.clock import Clock, mainthread
 from kivy.uix.boxlayout import BoxLayout
 from scapy.all import *
 from detections.test_detection import TestDetection
+from detections.deauth_detection import DeauthDetection
 from Logger import Logger
 from layouts.LeftSection import LeftSection
 from layouts.LogLayout import LogLayout
@@ -28,7 +29,7 @@ class MainLayout(BoxLayout):
     e = threading.Event()
     dev = "wlx28ee520b2232"
     packet_list = []
-    filename = "logs.pcap"
+    filename = "logs_deauth_with_auth.pcap"
     total_logs = StringProperty("0")
     ctr = 0; 
     def start_second_thread(self):
@@ -75,7 +76,7 @@ class MainLayout(BoxLayout):
                 return
             
     def run_test_detection(self):
-        test_detection = TestDetection(self.packet_list)
+        test_detection = DeauthDetection(self.packet_list)
         test_detection.start_detection_thread()
         while test_detection.in_progress:
             pass 

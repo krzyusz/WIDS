@@ -33,11 +33,15 @@ class DetectionResultPopup(BoxLayout):
                 log_layout.lid = str(self.counter)
                 log_layout.packet = packet.show(dump=True)
                 log_layout.src = packet.addr2
+            except Exception as e:
+                log_layout.src = " "
+            try:
                 log_layout.dst = packet.addr1
                 log_layout.ltype = packet_decoder.decode_packet_type(packet.type)
                 log_layout.lsubtype = packet_decoder.decode_packet_subtype(packet.type, packet.subtype)
             except Exception as e:
-                print(e)
+                pass
+            
         else:
             log_layout.lid = str(self.counter)
             log_layout.packet = packet.show(dump=True)
