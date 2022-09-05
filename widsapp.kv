@@ -107,8 +107,19 @@ MainLayout:
         text: 'Run: Test Detection'
         on_press: root.run_test_detection()
     Widget:
+        size: 200,100
+    BoxLayout:
+        size: 200, 50
+        pos_hint: {'center_x':.5, 'top':.4}
+        orientation: 'horizontal'
+        Label:
+            color: 0, 0, 0, 1
+            text: "Total logs"
+        Label:
+            color: 0, 0, 0, 1
+            text: root.parent.parent.total_logs
 
-<FilterInputSection@BoxLayout>:
+<FilterInputSection>:
     orientation: 'horizontal'
     size_hint: 1, None
     height: 30
@@ -116,9 +127,12 @@ MainLayout:
         text: "Insert filter here"
         size_hint: .9, 1
         multiline: False
+        on_text_validate: root.text_validate(self)
     Button:
         size_hint: .1, 1
         text: "run"
+        on_press: root.run_filter()
+
 
 <LogsDisplaySectionHeader@BoxLayout>:
     canvas.before:

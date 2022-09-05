@@ -4,6 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 class LeftSection(BoxLayout):
     listening = False
     tp = StringProperty("Start listening")
+    total_logs = StringProperty("1000")
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     def gather_logs(self):

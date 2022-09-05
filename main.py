@@ -12,11 +12,14 @@ from Logger import Logger
 from layouts.LeftSection import LeftSection
 from layouts.LogLayout import LogLayout
 from layouts.LogsListLayout import LogsListLayout
+from layouts.FilterInputSection import FilterInputSection
 from layouts.DetectionResultPopup import DetectionResultPopup
 from kivy.uix.popup import Popup
+from kivy.properties import StringProperty
 
 Config.set('graphics','width',1400)
 Config.set('graphics','height',800)
+DISPLAY_LOGS = False 
 
 class MainLayout(BoxLayout):
     def __init__(self, **kwargs):
@@ -26,6 +29,7 @@ class MainLayout(BoxLayout):
     dev = "wlx28ee520b2232"
     packet_list = []
     filename = "logs.pcap"
+    total_logs = StringProperty("0")
     ctr = 0; 
     def start_second_thread(self):
         Logger().set_monitor_mode(self.dev)
@@ -44,6 +48,9 @@ class MainLayout(BoxLayout):
         self.ids.rightSection.ids.logsDisplaySection.ids.logs.reset_logs()
         self.packet_list = []
         self.ctr = 0
+
+    def reset_displayed_logs(self):
+        self.ids.rightSection.ids.logsDisplaySection.ids.logs.reset_logs()
     
     def load_logs(self):
         self.reset_logs()
@@ -58,7 +65,9 @@ class MainLayout(BoxLayout):
     def packet_handler(self, pkt):
         self.ctr += 1
         self.packet_list.append(pkt)
-        self.add_log(str(self.ctr),pkt)
+        self.total_logs = str(self.ctr) 
+        if DISPLAY_LOGS:
+            self.add_log(str(self.ctr),pkt)
 
     def start_listening(self):
         for packet in sniff(iface=self.dev,stop_filter=lambda x: self.e.is_set(), prn=self.packet_handler):
