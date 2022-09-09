@@ -1,43 +1,24 @@
 from kivy.app import App
-from kivy.config import Config
-import sched, time
-import threading
-from kivy.lang import Builder
-from kivy.factory import Factory
-from kivy.clock import Clock, mainthread
-from kivy.uix.boxlayout import BoxLayout
-from scapy.all import *
-from detections.test_detection import TestDetection
-from detections.deauth_detection import DeauthDetection
-from Logger import Logger
-from layouts.LeftSection import LeftSection
-from layouts.LogLayout import LogLayout
-from layouts.LogsListLayout import LogsListLayout
-from layouts.FilterInputSection import FilterInputSection
-from layouts.DetectionResultPopup import DetectionResultPopup
-from kivy.uix.popup import Popup
-from kivy.properties import StringProperty
+from config import *
 
 Config.set('graphics','width',1400)
 Config.set('graphics','height',800)
-DISPLAY_LOGS = False 
+
 
 class MainLayout(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     stop = False
     e = threading.Event()
-    dev = "wlx28ee520b2232"
     packet_list = []
-    filename = "logs_deauth_with_auth.pcap"
     total_logs = StringProperty("0")
     ctr = 0; 
     def start_second_thread(self):
-        Logger().set_monitor_mode(self.dev)
+        Logger().set_monitor_mode(DEV)
         threading.Thread(target=self.start_listening).start()
 
-    def start_saving(self):
-        Clock.schedule_once(lambda cb: self.save_logs_to_file(self.filename,self.packet_list),0)
+    def start_saving(self,filename):
+        Clock.schedule_once(lambda cb: self.save_logs_to_file(filename,self.packet_list),0)
 
     def save_logs_to_file(self,filename,packet_list):
         Logger().save_to_pcap(packet_list,filename)
@@ -53,9 +34,9 @@ class MainLayout(BoxLayout):
     def reset_displayed_logs(self):
         self.ids.rightSection.ids.logsDisplaySection.ids.logs.reset_logs()
     
-    def load_logs(self):
+    def load_logs(self,filename):
         self.reset_logs()
-        scapy_cap = rdpcap(self.filename)
+        scapy_cap = rdpcap(filename)
         for packet in scapy_cap:
             self.packet_handler(packet)
 
@@ -71,7 +52,7 @@ class MainLayout(BoxLayout):
             self.add_log(str(self.ctr),pkt)
 
     def start_listening(self):
-        for packet in sniff(iface=self.dev,stop_filter=lambda x: self.e.is_set(), prn=self.packet_handler):
+        for packet in sniff(iface=DEV,stop_filter=lambda x: self.e.is_set(), prn=self.packet_handler):
             if self.stop:
                 return
             

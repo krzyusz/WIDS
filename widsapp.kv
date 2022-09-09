@@ -1,5 +1,25 @@
 MainLayout: 
 
+<InsertFilenamePopup>:
+    orientation: 'vertical'
+    size_hint: 1, 1
+    spacing: 50
+    padding: 50
+    TextInput:
+        text: "Insert filename"
+        size_hint: None, None
+        size: 400, 50
+        pos_hint: {'center_x':.5}
+        multiline: False
+        on_text: root.set_filename_for_operation(self)
+    Button:
+        size_hint: None, None
+        size: 200, 50
+        pos_hint: {'center_x':.5}
+        text: root.button_text
+        on_press: root.run_function()
+
+
 <DetectionResultPopup>:
     orientation: 'vertical'
     size_hint: 1, 1
@@ -89,13 +109,13 @@ MainLayout:
         size: 200, 50
         pos_hint: {'center_x':.5, 'top':.4}
         text: 'Save logs'
-        on_press: root.save_logs()
+        on_press: root.open_save_logs()
     Button:
         size_hint: None, None
         size: 200, 50
         pos_hint: {'center_x':.5, 'top':.4}
         text: 'Load logs'
-        on_press: root.load_logs()
+        on_press: root.open_load_logs()
     Widget:
         size_hint: None, None
         size: 200, 50
@@ -127,7 +147,7 @@ MainLayout:
         text: "Insert filter here"
         size_hint: .9, 1
         multiline: False
-        on_text_validate: root.text_validate(self)
+        on_text: root.text_validate(self)
     Button:
         size_hint: .1, 1
         text: "run"

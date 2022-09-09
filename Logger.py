@@ -4,6 +4,8 @@ from scapy.utils import wrpcap
 
 class Logger():
     def save_to_pcap(self, packet_list, filename):
+        if not os.path.exists(filename[0:filename.rfind("/")]):
+            os.makedirs(filename[0:filename.rfind("/")])
         wrpcap(filename,packet_list)
     def set_monitor_mode(self, dev):
         print("Trying to set monitor mode for device " + dev + "...")
