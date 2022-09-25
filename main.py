@@ -68,6 +68,11 @@ class MainLayout(BoxLayout):
         popupWindow = Popup(title="Detection: 'Test Detection' results", content=show, size_hint=(None,None),size=(800,600))
         popupWindow.open()
 
+    def feed_ap_info(self):
+        ap_info = AccessPointInfo()
+        ap_info.load_frames(self.packet_list)
+        ap_info.get_app_info_from_frames()
+        
 class WIDSApp(App):
     pass
 

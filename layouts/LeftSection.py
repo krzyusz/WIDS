@@ -47,3 +47,6 @@ class LeftSection(BoxLayout):
 
     def run_test_detection(self):
         self.parent.parent.run_test_detection()
+
+    def feed_ap_info(self):
+        self.parent.parent.feed_ap_info()

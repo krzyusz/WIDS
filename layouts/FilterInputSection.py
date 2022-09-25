@@ -13,6 +13,7 @@ class FilterInputSection(BoxLayout):
 
     def run_filter(self):
         try:
+            self.filtered_packet_list = [] 
             for i in range(0,len(self.parent.parent.parent.packet_list)):
                 self.filtered_packet_list.append((i,self.parent.parent.parent.packet_list[i]))
             self.parent.parent.parent.reset_displayed_logs()

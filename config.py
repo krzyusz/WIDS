@@ -15,6 +15,7 @@ from layouts.LogLayout import LogLayout
 from layouts.LogsListLayout import LogsListLayout
 from layouts.FilterInputSection import FilterInputSection
 from layouts.DetectionResultPopup import DetectionResultPopup
+from tools.AccessPointInfo import AccessPointInfo
 from kivy.uix.popup import Popup
 from kivy.properties import StringProperty
 
