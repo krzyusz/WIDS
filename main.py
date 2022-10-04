@@ -6,13 +6,19 @@ Config.set('graphics','height',800)
 
 
 class MainLayout(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
     stop = False
     e = threading.Event()
     packet_list = []
     total_logs = StringProperty("0")
     ctr = 0; 
+    ap_info = AccessPointInfo()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if os.path.exists("AP_INFO"):
+            self.ap_info.load_ap_info_from_file()
+            print("AP INFO LOADED")
+
     def start_second_thread(self):
         Logger().set_monitor_mode(DEV)
         threading.Thread(target=self.start_listening).start()
@@ -57,22 +63,25 @@ class MainLayout(BoxLayout):
                 return
             
     def run_test_detection(self):
-        test_detection = DeauthDetection(self.packet_list)
+        test_detection = SpoofedFramesDetection(self.packet_list)
         test_detection.start_detection_thread()
-        while test_detection.in_progress:
-            pass 
-        test_detection.print_suspected_packets()
-        show = DetectionResultPopup()
-        show.load_sets(self.packet_list,test_detection.suspected_packets_array)
-        show.fill_widgets()
-        popupWindow = Popup(title="Detection: 'Test Detection' results", content=show, size_hint=(None,None),size=(800,600))
-        popupWindow.open()
+        
+        #test_detection = DeauthDetection(self.packet_list)
+        #test_detection.start_detection_thread()
+        #while test_detection.in_progress:
+        #    pass 
+        #test_detection.print_suspected_packets()
+        #show = DetectionResultPopup()
+        #show.load_sets(self.packet_list,test_detection.suspected_packets_array)
+        #show.fill_widgets()
+        #popupWindow = Popup(title="Detection: 'Test Detection' results", content=show, size_hint=(None,None),size=(800,600))
+        #popupWindow.open()
 
     def feed_ap_info(self):
-        ap_info = AccessPointInfo()
-        ap_info.load_frames(self.packet_list)
-        ap_info.get_app_info_from_frames()
-        
+        self.ap_info.load_frames(self.packet_list)
+        self.ap_info.get_app_info_from_frames()
+        self.ap_info.save_ap_info_to_file()
+
 class WIDSApp(App):
     pass
 

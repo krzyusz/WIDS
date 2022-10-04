@@ -9,6 +9,8 @@ from kivy.uix.boxlayout import BoxLayout
 from scapy.all import *
 from detections.test_detection import TestDetection
 from detections.deauth_detection import DeauthDetection
+from detections.missmatch_fields_detection import MissmatchFieldsDetection
+from detections.spoofed_frames_detection import SpoofedFramesDetection
 from Logger import Logger
 from layouts.LeftSection import LeftSection
 from layouts.LogLayout import LogLayout
