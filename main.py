@@ -18,6 +18,7 @@ class MainLayout(BoxLayout):
         if os.path.exists("AP_INFO"):
             self.ap_info.load_ap_info_from_file()
             print("AP INFO LOADED")
+            self.load_logs("pcaps/manna_attack.pcap")
 
     def start_second_thread(self):
         Logger().set_monitor_mode(DEV)
@@ -63,7 +64,7 @@ class MainLayout(BoxLayout):
                 return
             
     def run_test_detection(self):
-        test_detection = SpoofedFramesDetection(self.packet_list)
+        test_detection = KarmaMannaDetection(self.packet_list)
         test_detection.start_detection_thread()
         
         #test_detection = DeauthDetection(self.packet_list)
