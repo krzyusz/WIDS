@@ -86,6 +86,7 @@ def add_measure():
         content = request.get_json()
         agent_id = content["AgentID"]
         frames = content["Frames"]
+        print(len(frames))
         counter = 0
         for frame in frames:
             f_info = frame["FrameInfo"]
@@ -103,9 +104,11 @@ def add_measure():
                 counter = counter + 1 
         resp = {"result": "Success", "Frames added:": counter}
 
-    except Exception:
+    except Exception as e:
+        print(e)
+        print(traceback.print_exc())
         resp = {"result": "Failed"}
-        traceback.print_exc()
+
 
     return resp
 
