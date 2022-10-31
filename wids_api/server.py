@@ -4,6 +4,7 @@ import time
 import psycopg2
 import os
 from flask_cors import CORS, cross_origin
+import traceback
 
 app = Flask(__name__)
 CORS(app)
@@ -54,7 +55,7 @@ def list_frames():
             resp["Frames"].append(frame)
 
     except Exception:
-        resp = {"error": f"There is no sensor with SensorID = {agent_id}"}
+        resp = {"error": f"There is no agent with AgentID = {agent_id}"}
 
     return resp
 
@@ -75,7 +76,7 @@ def get_measure_info(frame_id):
         }
 
     except Exception:
-        resp = {"error": f"There is no measure with FrameID = {frame_id}"}
+        resp = {"error": f"There is no frame with FrameID = {frame_id}"}
 
     return resp
 
@@ -104,6 +105,7 @@ def add_measure():
 
     except Exception:
         resp = {"result": "Failed"}
+        traceback.print_exc()
 
     return resp
 
