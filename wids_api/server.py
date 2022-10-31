@@ -5,6 +5,7 @@ import psycopg2
 import os
 from flask_cors import CORS, cross_origin
 import traceback
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +19,11 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
+class ByteEncoder(json.JSONEncoder):
+    def deafult(self,obj):
+        if isinstance(obj,bytes):
+            return obj.decode('utf-8')
+        return json.JSONEncoder.deafult(self,obj)
 
 @app.route('/', methods=['GET'])
 def main():
@@ -97,7 +103,7 @@ def add_measure():
                     INSERT INTO frames (agent_id, frame_info, frame_timestamp, frame_additional_data, frame_label)
                     VALUES (%s, %s, %s, %s, %s) RETURNING frame_id;
                     """
-            cur.execute(sql, (int(agent_id), f_info, f_timestamp, f_additional_data, f_label))
+            cur.execute(sql, (int(agent_id), json.dumps(f_info, cls=ByteEncoder), f_timestamp, json.dumps(f_additional_data, cls=ByteEncoder), f_label))
             frame_id = cur.fetchone()[0]
             conn.commit()
             if frame_id:
