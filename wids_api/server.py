@@ -4,6 +4,8 @@ import time
 import psycopg2
 import os
 from flask_cors import CORS, cross_origin
+import traceback
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -17,6 +19,11 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
+class ByteEncoder(json.JSONEncoder):
+    def deafult(self,obj):
+        if isinstance(obj,bytes):
+            return obj.decode('utf-8')
+        return json.JSONEncoder.deafult(self,obj)
 
 @app.route('/', methods=['GET'])
 def main():
@@ -54,7 +61,7 @@ def list_frames():
             resp["Frames"].append(frame)
 
     except Exception:
-        resp = {"error": f"There is no sensor with SensorID = {agent_id}"}
+        resp = {"error": f"There is no agent with AgentID = {agent_id}"}
 
     return resp
 
@@ -75,7 +82,7 @@ def get_measure_info(frame_id):
         }
 
     except Exception:
-        resp = {"error": f"There is no measure with FrameID = {frame_id}"}
+        resp = {"error": f"There is no frame with FrameID = {frame_id}"}
 
     return resp
 
@@ -85,6 +92,7 @@ def add_measure():
         content = request.get_json()
         agent_id = content["AgentID"]
         frames = content["Frames"]
+        print(len(frames))
         counter = 0
         for frame in frames:
             f_info = frame["FrameInfo"]
@@ -95,15 +103,18 @@ def add_measure():
                     INSERT INTO frames (agent_id, frame_info, frame_timestamp, frame_additional_data, frame_label)
                     VALUES (%s, %s, %s, %s, %s) RETURNING frame_id;
                     """
-            cur.execute(sql, (int(agent_id), f_info, f_timestamp, f_additional_data, f_label))
+            cur.execute(sql, (int(agent_id), json.dumps(f_info, cls=ByteEncoder), f_timestamp, json.dumps(f_additional_data, cls=ByteEncoder), f_label))
             frame_id = cur.fetchone()[0]
             conn.commit()
             if frame_id:
                 counter = counter + 1 
         resp = {"result": "Success", "Frames added:": counter}
 
-    except Exception:
+    except Exception as e:
+        print(e)
+        print(traceback.print_exc())
         resp = {"result": "Failed"}
+
 
     return resp
 
