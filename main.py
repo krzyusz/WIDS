@@ -99,7 +99,7 @@ class MainLayout(BoxLayout):
         headers = {"Content-type":"application/json"}
         for frame in self.packet_list:
             try:
-                if counter == 20:
+                if counter == 20: # todo: check maximum frames that can be send in one request for better efficiency
                     req = {
                         "AgentID":1,
                         "Frames":all_frames   
