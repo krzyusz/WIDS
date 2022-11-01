@@ -50,3 +50,6 @@ class LeftSection(BoxLayout):
 
     def feed_ap_info(self):
         self.parent.parent.feed_ap_info()
+
+    def send_to_cloud(self):
+        self.parent.parent.send_to_cloud()

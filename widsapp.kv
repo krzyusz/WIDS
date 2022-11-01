@@ -132,6 +132,12 @@ MainLayout:
         pos_hint: {'center_x':.5, 'top':.4}
         text: 'Feed AP info'
         on_press: root.feed_ap_info()
+    Button:
+        size_hint: None, None
+        size: 200, 50
+        pos_hint: {'center_x':.5, 'top':.4}
+        text: 'Send logs to cloud'
+        on_press: root.send_to_cloud()
     Widget:
         size: 200,100
     BoxLayout:

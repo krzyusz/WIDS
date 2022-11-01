@@ -1,9 +1,19 @@
 from kivy.app import App
 from config import *
+import time 
+from scapy_helper import to_dict
+import packet_decoder
+import requests
+import json
 
 Config.set('graphics','width',1400)
 Config.set('graphics','height',800)
 
+class ByteEncoder(json.JSONEncoder):
+    def default(self,obj):
+        if isinstance(obj,bytes):
+            return obj.decode('utf-8')
+        return json.JSONEncoder.default(self,obj)
 
 class MainLayout(BoxLayout):
     stop = False
@@ -63,24 +73,57 @@ class MainLayout(BoxLayout):
                 return
             
     def run_test_detection(self):
-        test_detection = SpoofedFramesDetection(self.packet_list)
+        test_detection = KrackDetection(self.packet_list)
         test_detection.start_detection_thread()
         
         #test_detection = DeauthDetection(self.packet_list)
         #test_detection.start_detection_thread()
-        #while test_detection.in_progress:
-        #    pass 
-        #test_detection.print_suspected_packets()
-        #show = DetectionResultPopup()
-        #show.load_sets(self.packet_list,test_detection.suspected_packets_array)
-        #show.fill_widgets()
-        #popupWindow = Popup(title="Detection: 'Test Detection' results", content=show, size_hint=(None,None),size=(800,600))
-        #popupWindow.open()
+        while test_detection.in_progress:
+            pass 
+        test_detection.print_suspected_packets()
+        show = DetectionResultPopup()
+        show.load_sets(self.packet_list,test_detection.suspected_packets_array)
+        show.fill_widgets()
+        popupWindow = Popup(title="Detection: 'Test Detection' results", content=show, size_hint=(None,None),size=(800,600))
+        popupWindow.open()
 
     def feed_ap_info(self):
         self.ap_info.load_frames(self.packet_list)
         self.ap_info.get_app_info_from_frames()
         self.ap_info.save_ap_info_to_file()
+
+    def send_to_cloud(self):
+        all_frames = [] 
+        counter = 0 
+        url = "https://wids-api.onrender.com/add/frames"
+        headers = {"Content-type":"application/json"}
+        for frame in self.packet_list:
+            try:
+                if counter == 20:
+                    req = {
+                        "AgentID":1,
+                        "Frames":all_frames   
+                    }
+                    r = requests.post(url, data=json.dumps(req, cls=ByteEncoder), headers=headers)
+                    print(r.json())
+                    counter = 0 
+                    all_frames = []
+                struct = {
+                    "FrameInfo":{
+                        "type":packet_decoder.decode_packet_type(frame.type),
+                        "subtype":packet_decoder.decode_packet_subtype(frame.type, frame.subtype),
+                        "src":str(frame.addr2),
+                        "dst":str(frame.addr1),
+                        "timestamp":str(frame[Dot11FCS].fcs)
+                    },
+                    "Timestamp":str(time.time()),
+                    "AdditionalData":to_dict(frame),
+                    "Label":"Not classified"
+                }
+                all_frames.append(struct)
+                counter = counter + 1 
+            except Exception as e:
+                print(e)
 
 class WIDSApp(App):
     pass
