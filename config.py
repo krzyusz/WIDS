@@ -12,6 +12,8 @@ from detections.deauth_detection import DeauthDetection
 from detections.missmatch_fields_detection import MissmatchFieldsDetection
 from detections.spoofed_frames_detection import SpoofedFramesDetection
 from detections.karmaManna_detection import KarmaMannaDetection
+from detections.cts_flood_detection import CTSFlood
+from detections.fakeAP_detection import fakeAP
 from Logger import Logger
 from layouts.LeftSection import LeftSection
 from layouts.LogLayout import LogLayout

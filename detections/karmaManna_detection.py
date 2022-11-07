@@ -22,9 +22,9 @@ class KarmaMannaDetection(BaseDetection):
         k=0
         for frame in self.packet_array:
             if frame.type == 0 and frame.subtype == 8:	            # IF mgmt & beacon
-                if frame[RadioTap].cap.privacy == True:                    # "As observed, all forge packets only have ESS Capability and does not have any other capabilities. "
+                if frame[Dot11Beacon].cap.privacy == True:                    # "As observed, all forge packets only have ESS Capability and does not have any other capabilities. "
                     self.enc_beacons.append([frame.info.decode("utf-8"),frame.addr2])
-                elif frame[RadioTap].cap.privacy == False:
+                elif frame[Dot11Beacon].cap.privacy == False:
                     self.no_enc_beacons.append([frame.info.decode("utf-8"),frame.addr2])	        # dopisac pobieranie BSSID i SSID
                     #print(frame[RadioTap].cap.privacy)
                     k+=1

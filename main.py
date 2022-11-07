@@ -64,7 +64,7 @@ class MainLayout(BoxLayout):
                 return
             
     def run_test_detection(self):
-        test_detection = KarmaMannaDetection(self.packet_list)
+        test_detection = fakeAP(self.packet_list)
         test_detection.start_detection_thread()
         
         #test_detection = DeauthDetection(self.packet_list)
