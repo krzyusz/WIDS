@@ -12,6 +12,7 @@ class MainLayout(BoxLayout):
     total_logs = StringProperty("0")
     ctr = 0; 
     ap_info = AccessPointInfo()
+    LIVE_RUNNING = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -52,11 +53,32 @@ class MainLayout(BoxLayout):
         self.ids.rightSection.ids.logsDisplaySection.ids.logs.add_log(lid,packet)
 
     def packet_handler(self, pkt):
+        print("shalom")
         self.ctr += 1
         self.packet_list.append(pkt)
         self.total_logs = str(self.ctr) 
         if DISPLAY_LOGS:
+            print("shalom2")
             self.add_log(str(self.ctr),pkt)
+
+        detections_list=[DeauthDetection([]), MissmatchFieldsDetection([]),
+        SpoofedFramesDetection([]), KarmaMannaDetection([]),
+        CTSFlood([]), fakeAP([])]
+        print("shalom3")
+        if self.LIVE_RUNNING == True:
+            print("shalom4")
+            if self.ctr%100==0:
+                print("petla 1")
+                print(self.ctr)
+                for detection in detections_list:
+                    print("petla 2")
+                    if detection.in_progress:
+                        print(detection, "in progres")
+                        continue
+                    else:
+                        print("Wykrywanie", detection, '\n')
+                        detection.packet_array = self.packet_list[self.ctr-200:self.ctr]
+                        detection.start_detection_thread()         
 
     def start_listening(self):
         for packet in sniff(iface=DEV,stop_filter=lambda x: self.e.is_set(), prn=self.packet_handler):
@@ -77,6 +99,11 @@ class MainLayout(BoxLayout):
         #show.fill_widgets()
         #popupWindow = Popup(title="Detection: 'Test Detection' results", content=show, size_hint=(None,None),size=(800,600))
         #popupWindow.open()
+
+    def run_live_detection(self):
+        self.LIVE_RUNNING = ~self.LIVE_RUNNING
+        print("dla debugu", bool(self.LIVE_RUNNING))
+        
 
     def feed_ap_info(self):
         self.ap_info.load_frames(self.packet_list)

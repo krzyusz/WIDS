@@ -130,6 +130,12 @@ MainLayout:
         size_hint: None, None
         size: 200, 50
         pos_hint: {'center_x':.5, 'top':.4}
+        text: 'Run: Live Detection'
+        on_press: root.run_live_detection()
+    Button:
+        size_hint: None, None
+        size: 200, 50
+        pos_hint: {'center_x':.5, 'top':.4}
         text: 'Feed AP info'
         on_press: root.feed_ap_info()
     Widget:

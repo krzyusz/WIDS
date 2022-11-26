@@ -3,12 +3,13 @@ from tools.AccessPointInfo import AccessPointInfo
 from scapy.all import *
 import sys, datetime, scapy
 
-class fakeAP(BaseDetection):               
+class beaconFlood(BaseDetection):               
     def __init__(self,frame_array):
         super().__init__(frame_array)
 
     def start_detection(self):
-        THRESH = 5
+
+        THRESH = 1024
         ssidDict = {}
         ssidCnt = {}
         self.in_progress = True
@@ -17,7 +18,7 @@ class fakeAP(BaseDetection):
                 ssid = frame.info.decode("utf-8")
                 bssid = frame.addr2
                 stamp = frame[Dot11Beacon].timestamp #str(p.getlayer(Dot11).timestamp)
-                #print(ssid, bssid, stamp, '\n')
+                print(ssid, bssid, stamp, '\n')
                 if bssid not in ssidDict:
                     ssidDict[bssid] = []
                     ssidCnt[bssid]=0
