@@ -12,6 +12,10 @@ from detections.deauth_detection import DeauthDetection
 from detections.missmatch_fields_detection import MissmatchFieldsDetection
 from detections.spoofed_frames_detection import SpoofedFramesDetection
 from detections.krack_detection import KrackDetection
+from detections.karmaManna_detection import KarmaMannaDetection
+from detections.cts_flood_detection import CTSFlood
+from detections.fakeAP_detection import fakeAP
+from detections.beaconFlood_detection import beaconFlood
 from Logger import Logger
 from layouts.LeftSection import LeftSection
 from layouts.LogLayout import LogLayout
@@ -22,5 +26,5 @@ from tools.AccessPointInfo import AccessPointInfo
 from kivy.uix.popup import Popup
 from kivy.properties import StringProperty
 
-DEV = "wlx28ee520b2232"
+DEV = "wlxd03745cdbdc6"
 DISPLAY_LOGS = False 

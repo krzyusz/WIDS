@@ -5,6 +5,7 @@ from scapy_helper import to_dict
 import packet_decoder
 import requests
 import json
+from time import sleep
 
 Config.set('graphics','width',1400)
 Config.set('graphics','height',800)
@@ -22,12 +23,14 @@ class MainLayout(BoxLayout):
     total_logs = StringProperty("0")
     ctr = 0; 
     ap_info = AccessPointInfo()
+    LIVE_RUNNING = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if os.path.exists("AP_INFO"):
             self.ap_info.load_ap_info_from_file()
             print("AP INFO LOADED")
+            #self.load_logs("pcaps/manna_attack.pcap")
 
     def start_second_thread(self):
         Logger().set_monitor_mode(DEV)
@@ -55,17 +58,39 @@ class MainLayout(BoxLayout):
         scapy_cap = rdpcap(filename)
         for packet in scapy_cap:
             self.packet_handler(packet)
+            sleep(0.01)
 
     @mainthread
     def add_log(self,lid,packet):
         self.ids.rightSection.ids.logsDisplaySection.ids.logs.add_log(lid,packet)
 
     def packet_handler(self, pkt):
+        print("shalom")
         self.ctr += 1
         self.packet_list.append(pkt)
         self.total_logs = str(self.ctr) 
         if DISPLAY_LOGS:
+            print("shalom2")
             self.add_log(str(self.ctr),pkt)
+
+        detections_list=[DeauthDetection([]), MissmatchFieldsDetection([]),
+        SpoofedFramesDetection([]), KarmaMannaDetection([]),
+        CTSFlood([]), fakeAP([])]
+        print("shalom3")
+        if self.LIVE_RUNNING == True:
+            print("shalom4")
+            if self.ctr%100==0:
+                print("petla 1")
+                print(self.ctr)
+                for detection in detections_list:
+                    print("petla 2")
+                    if detection.in_progress:
+                        print(detection, "in progres")
+                        continue
+                    else:
+                        print("Wykrywanie", detection, '\n')
+                        detection.packet_array = self.packet_list[self.ctr-200:self.ctr]
+                        detection.start_detection_thread()         
 
     def start_listening(self):
         for packet in sniff(iface=DEV,stop_filter=lambda x: self.e.is_set(), prn=self.packet_handler):
@@ -73,7 +98,7 @@ class MainLayout(BoxLayout):
                 return
             
     def run_test_detection(self):
-        test_detection = KrackDetection(self.packet_list)
+        test_detection = fakeAP(self.packet_list)
         test_detection.start_detection_thread()
         
         #test_detection = DeauthDetection(self.packet_list)
@@ -86,6 +111,11 @@ class MainLayout(BoxLayout):
         show.fill_widgets()
         popupWindow = Popup(title="Detection: 'Test Detection' results", content=show, size_hint=(None,None),size=(800,600))
         popupWindow.open()
+
+    def run_live_detection(self):
+        self.LIVE_RUNNING = bool(~self.LIVE_RUNNING)
+        print("dla debugu", self.LIVE_RUNNING)
+        
 
     def feed_ap_info(self):
         self.ap_info.load_frames(self.packet_list)

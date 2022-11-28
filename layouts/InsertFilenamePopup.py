@@ -6,7 +6,7 @@ from kivy.properties import StringProperty
 
 class InsertFilenamePopup(BoxLayout):
     popup_type = "" # save or load
-    filename = ""
+    filename = "manna_attack.pcap"
     button_text = StringProperty("")
     caller = None
     def __init__(self, **kwargs):
