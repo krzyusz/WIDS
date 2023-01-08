@@ -119,8 +119,6 @@ def add_measure():
     return resp
 
 
-# EVERY OTHER REQUEST
 @app.errorhandler(404)
 def handle_404(e):
     return {"error": "Not Found"}
-#app.run(port=5000)
